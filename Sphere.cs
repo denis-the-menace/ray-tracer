@@ -48,7 +48,6 @@ public class Sphere : Object3D
       hit.t = t1;
       hit.color = color;
       hit.normal = hitNormal;
-      // Console.WriteLine(hit.normal.ToString());
 
       return true;
     }

@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Text;
 
 public class Group : Object3D
 {
-  private ArrayList objects = new ArrayList();
+  private List<Object3D> objects = new List<Object3D>();
 
   public Group(params Object3D[] objects) : base(0, 0, 0)
   {

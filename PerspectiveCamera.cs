@@ -17,23 +17,16 @@ public class PerspectiveCamera : Camera
   {
     Vector4 horizontal = direction.Cross(up);
 
-    float k = 1 / MathF.Tan(angle / 2);
-    Vector4 a = direction.Multiply(k);
+    // fov'u genistletmek icin
+    float adjustedAngle = angle * 0.2f;
+
+    float k = 1 / MathF.Tan(adjustedAngle / 2);
+    Vector4 a = direction.Multiply(k).Multiply(-1);
     Vector4 b = horizontal.Multiply(x - 0.5f).Multiply((float)2);
     Vector4 c = up.Multiply(y - 0.5f).Multiply((float)2);
 
-    Vector4 rayDirection = b.Add(c).Add(a);
-    // Vector4 rayOrigin = center.Add(horizontal.Multiply(size * (x - 0.5f))).Add(up.Multiply(size * (y - 0.5f)));
-
-    // Calculate the camera's right vector
-    // Vector4 right = Vector4.Cross(direction, up).Normalized();
-
-    // Calculate the half-width and half-height of the view plane
-    // float halfHeight = MathF.Tan(angle / 2);
-    // float halfWidth = aspectRatio * halfHeight;
-
-    // Calculate the direction of the ray
-    // Vector4 rayDirection = (direction + x * halfWidth * right + y * halfHeight * up).Normalized();
+    // discriminant hep negatif cikiyor diye -1 ile carptim ama neden bilmiyorum?
+    Vector4 rayDirection = a.Add(b).Subtract(c);
 
     return new Ray(center, rayDirection);
   }

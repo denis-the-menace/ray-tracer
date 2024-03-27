@@ -1,6 +1,6 @@
 public abstract class Object3D
 {
-  protected float[] color;
+  public float[] color {get; private set;} = new float[3];
 
   public Object3D(float red, float green, float blue)
   {

@@ -110,11 +110,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/nazim/workspace/c-sharp/computer-graphics/assignment1/assignment1.csproj",
+      "projectUniqueName": "/home/nazim/okul/computer-graphics/ray_tracing/assignment1.csproj",
       "projectName": "assignment1",
-      "projectPath": "/home/nazim/workspace/c-sharp/computer-graphics/assignment1/assignment1.csproj",
+      "projectPath": "/home/nazim/okul/computer-graphics/ray_tracing/assignment1.csproj",
       "packagesPath": "/home/nazim/.nuget/packages/",
-      "outputPath": "/home/nazim/workspace/c-sharp/computer-graphics/assignment1/obj/",
+      "outputPath": "/home/nazim/okul/computer-graphics/ray_tracing/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/nazim/.nuget/NuGet/NuGet.Config"

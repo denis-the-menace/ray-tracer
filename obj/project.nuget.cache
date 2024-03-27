@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "sK/IiTh7/XTWJqjj/vtcbhYB3nSpxDuq3NlAgR77FpqnaLW2snhWkuvzZ5L7Q/xcBbR33bvQQJzyrMfDssOZbg==",
+  "dgSpecHash": "KLiaRq4ae+a8sPPHraI7s20ChZQN4hLgiO6JG7hJ/xWCkBOpRmdaeYPz5NCFThg/oWCwCH34lYnjwa/uokz1lg==",
   "success": true,
-  "projectFilePath": "/home/nazim/workspace/c-sharp/computer-graphics/assignment1/assignment1.csproj",
+  "projectFilePath": "/home/nazim/okul/computer-graphics/ray_tracing/assignment1.csproj",
   "expectedPackageFiles": [
     "/home/nazim/.nuget/packages/sixlabors.fonts/2.0.1/sixlabors.fonts.2.0.1.nupkg.sha512",
     "/home/nazim/.nuget/packages/sixlabors.imagesharp/3.1.3/sixlabors.imagesharp.3.1.3.nupkg.sha512",
