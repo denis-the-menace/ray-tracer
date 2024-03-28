@@ -1,6 +1,5 @@
 ﻿namespace assignment1;
 
-using System.Text.Json;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -8,37 +7,13 @@ class Program
 {
   static void Main(string[] args)
   {
-    string inputFile = "a3_scenes/scene3_perspective.json";
-    string jsonContent = File.ReadAllText(inputFile);
-    JsonDocument jsonDocument = JsonDocument.Parse(jsonContent);
-    JsonElement root = jsonDocument.RootElement;
-    // JsonElement orthocameraJSON = root.GetProperty("orthocamera");
-    JsonElement perspectivecameraJSON = root.GetProperty("perspectivecamera");
-    JsonElement backgroundJSON = root.GetProperty("background");
-    JsonElement groupJSON = root.GetProperty("group");
-    JsonElement lightJSON = root.GetProperty("light");
-
-    // OrthographicCamera camera = new OrthographicCamera(new Vector4(ConvertJsonArrayToFloatArray(orthocameraJSON.GetProperty("center"))), new Vector4(ConvertJsonArrayToFloatArray(orthocameraJSON.GetProperty("direction"))), new Vector4(ConvertJsonArrayToFloatArray(orthocameraJSON.GetProperty("up"))), orthocameraJSON.GetProperty("size").GetSingle());
-
-    PerspectiveCamera camera = new PerspectiveCamera(new Vector4(ConvertJsonArrayToFloatArray(perspectivecameraJSON.GetProperty("center"))), new Vector4(ConvertJsonArrayToFloatArray(perspectivecameraJSON.GetProperty("direction"))), new Vector4(ConvertJsonArrayToFloatArray(perspectivecameraJSON.GetProperty("up"))), perspectivecameraJSON.GetProperty("angle").GetSingle());
-
-    // float[] background = ConvertJsonArrayToFloatArray(backgroundJSON.GetProperty("color"));
-    Background background = new Background(ConvertJsonArrayToFloatArray(backgroundJSON.GetProperty("color")), ConvertJsonArrayToFloatArray(backgroundJSON.GetProperty("ambient")));
-
-    Vector4 lightDirection = new Vector4(ConvertJsonArrayToFloatArray(lightJSON.GetProperty("direction")));
-    float[] lightColor = ConvertJsonArrayToFloatArray(lightJSON.GetProperty("color"));
-
-    Group group = new Group();
-    foreach (JsonElement sphereElement in groupJSON.EnumerateArray())
+    if (args.Length != 3)
     {
-      JsonElement sphereProperties = sphereElement.GetProperty("sphere");
-      Vector4 center = new Vector4(ConvertJsonArrayToFloatArray(sphereProperties.GetProperty("center")));
-      float radius = sphereProperties.GetProperty("radius").GetSingle();
-      float[] color = ConvertJsonArrayToFloatArray(sphereProperties.GetProperty("color"));
-
-      Sphere sphere = new Sphere(center, radius, color);
-      group.AddObject(sphere);
+      Console.WriteLine("Usage: dotnet run <path_to_json_file> <output_file_name>");
+      return;
     }
+
+    SceneObjects scene = SceneParser.ParseScene(args[0]);
 
     float tMin = float.PositiveInfinity;
     float near = 8.0f;
@@ -56,35 +31,30 @@ class Program
         {
           float normalizedX = (x / (width - 1.0f)) * 2.0f - 0.5f;
           float normalizedY = (y / (height - 1.0f)) * 2.0f - 0.5f;
-          Ray ray = camera.GenerateRay(normalizedX, normalizedY);
-          Hit hit = new Hit(float.PositiveInfinity, background.color);
-          bool hitOccured = group.Intersect(ray, hit, tMin);
+          Ray ray = scene.camera.GenerateRay(normalizedX, normalizedY);
+          Hit hit = new Hit(float.PositiveInfinity, scene.background.color);
+          bool hitOccured = scene.group.Intersect(ray, hit, tMin);
 
           //eger hitOccured true ise depth value hesapla cunku shading etkisi, false ise hesaplama cunku bg gozuksun
           byte depthValue;
-          float[] colors;
-          if (hitOccured)
+          float[] colors; if (hitOccured)
           {
             float depth = (far - hit.t) / (far - near);
             depth *= 255.0f; // Convert depth to [0, 255] interval
             depthValue = (byte)depth;
-            colors = ComputeLighting(background.ambient, hit.color, lightColor, lightDirection, hit.normal);
-            // Console.WriteLine(colors[0] + " " + colors[1] + " " + colors[2]);
+            colors = ComputeLighting(scene.background.ambient, hit.color, scene.light.color, scene.light.direction, hit.normal);
           }
           else
           {
             depthValue = (byte)255;
-            colors = ComputeLighting(background.ambient, hit.color, lightColor, lightDirection, hit.normal);
+            colors = ComputeLighting(scene.background.ambient, hit.color, scene.light.color, scene.light.direction, hit.normal);
           }
 
-
           Rgba32 color = new Rgba32(colors[0], colors[1], colors[2], depthValue);
-
-          // Console.WriteLine(color.ToString());
           image[x, y] = color;
         }
       }
-      image.Save("output3.png");
+      image.Save(args[1]);
     }
     Console.WriteLine("Image saved successfully.");
   }
@@ -115,16 +85,4 @@ class Program
 
     return result;
   }
-
-  static float[] ConvertJsonArrayToFloatArray(JsonElement jsonElement)
-  {
-    float[] floatArray = new float[jsonElement.GetArrayLength()];
-    int i = 0;
-    foreach (JsonElement element in jsonElement.EnumerateArray())
-    {
-      floatArray[i++] = element.GetSingle();
-    }
-    return floatArray;
-  }
 }
-

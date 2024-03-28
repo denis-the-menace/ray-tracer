@@ -17,7 +17,6 @@ public class OrthographicCamera : Camera
   {
     Vector4 horizontal = direction.Cross(up);
 
-    // Vector4 rayOrigin = center.Add(horizontal.Multiply(size * (x - 0.5f))).Add(up.Multiply(size * (y - 0.5f)));
     Vector4 rayOrigin = center.Add(horizontal.Multiply(size * (x - 0.5f))).Subtract(up.Multiply(size * (y - 0.5f)));
 
     return new Ray(rayOrigin, direction);

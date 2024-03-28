@@ -8,4 +8,9 @@ public class Ray
     this.origin = new Vector4(origin);
     this.direction = new Vector4(direction).Normalize();
   }
+
+  public override string ToString()
+  {
+    return $"Ray:\nOrigin: {origin}\nDirection: {direction}";
+  }
 }

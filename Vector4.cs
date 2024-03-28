@@ -93,7 +93,6 @@ public class Vector4
     }
     else
     {
-      // Handle division by zero gracefully
       return new Vector4(float.MaxValue, float.MaxValue, float.MaxValue, float.MaxValue);
     }
   }
