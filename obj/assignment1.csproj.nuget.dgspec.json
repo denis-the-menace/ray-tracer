@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/nazim/okul/computer-graphics/ray_tracing/assignment1.csproj": {}
+    "/home/nazim/okul/computer-graphics/ray_tracer/assignment1.csproj": {}
   },
   "projects": {
-    "/home/nazim/okul/computer-graphics/ray_tracing/assignment1.csproj": {
+    "/home/nazim/okul/computer-graphics/ray_tracer/assignment1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/nazim/okul/computer-graphics/ray_tracing/assignment1.csproj",
+        "projectUniqueName": "/home/nazim/okul/computer-graphics/ray_tracer/assignment1.csproj",
         "projectName": "assignment1",
-        "projectPath": "/home/nazim/okul/computer-graphics/ray_tracing/assignment1.csproj",
+        "projectPath": "/home/nazim/okul/computer-graphics/ray_tracer/assignment1.csproj",
         "packagesPath": "/home/nazim/.nuget/packages/",
-        "outputPath": "/home/nazim/okul/computer-graphics/ray_tracing/obj/",
+        "outputPath": "/home/nazim/okul/computer-graphics/ray_tracer/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/nazim/.nuget/NuGet/NuGet.Config"

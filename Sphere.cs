@@ -3,8 +3,7 @@ public class Sphere : Object3D
   public float radius { get; private set; }
   public Vector4 center { get; private set; }
 
-  public Sphere(Vector4 center, float radius, float[] color)
-      : base(color[0], color[1], color[2])
+  public Sphere(Vector4 center, float radius, Material material) : base(material)
   {
     this.center = new Vector4(center);
     this.radius = radius;
@@ -16,9 +15,9 @@ public class Sphere : Object3D
 
     float a = ray.direction.Dot(ray.direction);
     float b = 2.0f * L.Dot(ray.direction);
-    // float b = 2.0f * ray.direction.Dot(L);
     float c = L.Dot(L) - (radius * radius);
 
+    // The discriminant determines if there are real solutions to the quadratic equation. If the discriminant is positive, there are two real roots (intersection points).
     float discriminant = b * b - 4.0f * a * c;
 
     if (discriminant > 0)
@@ -33,10 +32,10 @@ public class Sphere : Object3D
         t2 = temp;
       }
 
-      if (t1 < 0)
+      if (t1 < tMin)
       {
-        t1 = t2; // if t0 is negative, let's use t1 instead
-        if (t1 < 0) return false; // both t0 and t1 are negative
+        t1 = t2; // if t1 is negative, let's use t1 instead
+        if (t1 < tMin) return false; // both t1 and t2 are negative
       }
 
       Vector4 hitPoint = ray.origin.Add(ray.direction.Multiply(t1));
@@ -46,7 +45,7 @@ public class Sphere : Object3D
 
 
       hit.t = t1;
-      hit.color = color;
+      hit.material = material;
       hit.normal = hitNormal;
 
       return true;
@@ -56,6 +55,6 @@ public class Sphere : Object3D
 
   public override string ToString()
   {
-    return $"Sphere: Center({center}), Radius({radius}), Color({color[0]}, {color[1]}, {color[2]})";
+    return $"Sphere: Center({center}), Radius({radius}), Material({material})";
   }
 }

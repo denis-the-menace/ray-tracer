@@ -4,7 +4,7 @@ public class Group : Object3D
 {
   private List<Object3D> objects = new List<Object3D>();
 
-  public Group(params Object3D[] objects) : base(0, 0, 0)
+  public Group(params Object3D[] objects) : base(null)
   {
     foreach (Object3D obj in objects)
     {
@@ -29,7 +29,7 @@ public class Group : Object3D
     foreach (Object3D obj in objects)
     {
       // Create a temporary Hit to store the intersection information for each object
-      Hit tempHit = new Hit(hit.t, hit.color);
+      Hit tempHit = new Hit(hit.t, hit.material);
 
       // Check for intersection with the current object in the group
       if (obj.Intersect(ray, tempHit, tMin))
@@ -39,7 +39,7 @@ public class Group : Object3D
         if (tempHit.t < hit.t)
         {
           hit.t = tempHit.t;
-          hit.color = tempHit.color;
+          hit.material = tempHit.material;
           hit.normal = tempHit.normal;
         }
       }

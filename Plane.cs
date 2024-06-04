@@ -3,7 +3,7 @@ public class Plane : Object3D
   private Vector4 normal;
   private float d; // offset from origin
 
-  public Plane(Vector4 normal, float d, float[] color) : base(color[0], color[1], color[2])
+  public Plane(Vector4 normal, float d, Material material) : base(material)
   {
     this.normal = normal.Normalize();
     this.d = d;
@@ -14,19 +14,19 @@ public class Plane : Object3D
     float denominator = ray.direction.Dot(normal);
 
     // Check if the ray is parallel or almost parallel to the plane (for performance)
-    if (MathF.Abs(denominator) < 1e-6)
+    if (MathF.Abs(denominator) < float.Epsilon)
       return false;
 
     Vector4 p0 = new Vector4(normal.Multiply(d));
     float t = (p0.Subtract(ray.origin)).Dot(normal) / denominator;
 
     // Check if intersection is within allowed range and closer than previous hits
-    if (t < 0)
+    if (t < tMin || t >= hit.t)
       return false;
 
     // Update hit information
     hit.t = t;
-    hit.color = color;
+    hit.material = this.material;
     hit.normal = normal;
 
     return true;
@@ -34,7 +34,7 @@ public class Plane : Object3D
 
   public override string ToString()
   {
-    return $"Plane: Normal({normal}), Offset({d}), Color({color[0]}, {color[1]}, {color[2]})";
+    return $"Plane: Normal({normal}), Offset({d}), Material({material})";
   }
 
 }

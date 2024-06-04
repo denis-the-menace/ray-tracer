@@ -1,10 +1,10 @@
 public abstract class Object3D
 {
-  public float[] color {get; private set;} = new float[3];
+  public Material material;
 
-  public Object3D(float red, float green, float blue)
+  public Object3D(Material material)
   {
-    color = new float[] { red, green, blue };
+    this.material = material;
   }
 
   public abstract bool Intersect(Ray ray, Hit hit, float tMin);

@@ -1,11 +1,9 @@
-public class Light
+public abstract class Light
 {
-  public Vector4 direction { get; private set; }
-  public float[] color { get; private set; }
+  public Vector4 color { get; private set; }
 
-  public Light(Vector4 direction, float[] color)
+  public Light(Vector4 color)
   {
-    this.direction = direction;
     this.color = color;
   }
 }

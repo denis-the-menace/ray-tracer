@@ -4,7 +4,7 @@ public class Triangle : Object3D
   private Vector4 v2;
   private Vector4 v3;
 
-  public Triangle(Vector4 v1, Vector4 v2, Vector4 v3, float[] color) : base(color[0], color[1], color[2])
+  public Triangle(Vector4 v1, Vector4 v2, Vector4 v3, Material material) : base(material)
   {
     this.v1 = v1;
     this.v2 = v2;
@@ -26,7 +26,7 @@ public class Triangle : Object3D
     // check if the ray and plane are parallel.
     float NdotRayDirection = N.Dot(ray.direction);
     if (MathF.Abs(NdotRayDirection) < float.Epsilon) // almost 0
-      return false; // they are parallel so they don't intersect! 
+      return false; // they are parallel so they don't intersect
 
     // compute d parameter using equation 2
     float d = -N.Dot(v1);
@@ -63,15 +63,15 @@ public class Triangle : Object3D
     if (N.Dot(C) < 0) return false; // P is on the right side;
 
     hit.t = t;
-    hit.color = color;
+    hit.material= this.material;
     hit.normal = N.Normalize();
 
-    return true; // this ray hits the triangle
+    return true;
   }
 
   public override string ToString()
   {
-    return $"Triangle: V1({v1}), V2({v2}), V3({v3}), Color({color[0]}, {color[1]}, {color[2]})";
+    return $"Triangle: V1({v1}), V2({v2}), V3({v3}), Material({material})";
   }
 
 }

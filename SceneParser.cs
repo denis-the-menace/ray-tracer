@@ -5,7 +5,8 @@ public struct SceneObjects
   public Camera camera { get; set; }
   public Background background { get; set; }
   public Group group { get; set; }
-  public Light light { get; set; }
+  public Light[] lights { get; set; }
+  public Material[] materials { get; set; }
 }
 
 public class SceneParser
@@ -18,11 +19,12 @@ public class SceneParser
     JsonElement root = jsonDocument.RootElement;
     JsonElement backgroundJSON = root.GetProperty("background");
     JsonElement groupJSON = root.GetProperty("group");
-    JsonElement lightJSON = root.GetProperty("light");
-    bool hasOrthoCamera = root.TryGetProperty("orthocamera", out JsonElement orthocameraJSON);
+    JsonElement lightsJSON = root.GetProperty("lights");
+    JsonElement materialsJSON = root.GetProperty("materials");
+    // bool hasOrthoCamera = root.TryGetProperty("orthocamera", out JsonElement orthocameraJSON);
 
     Camera camera;
-    if (hasOrthoCamera)
+    if (root.TryGetProperty("orthocamera", out JsonElement orthocameraJSON))
     {
       camera = new OrthographicCamera(
           new Vector4(ConvertJsonArrayToFloatArray(orthocameraJSON.GetProperty("center"))),
@@ -43,33 +45,68 @@ public class SceneParser
     }
 
     Background background = new Background(
-        ConvertJsonArrayToFloatArray(backgroundJSON.GetProperty("color")),
-        ConvertJsonArrayToFloatArray(backgroundJSON.GetProperty("ambient"))
+        new Vector4(ConvertJsonArrayToFloatArray(backgroundJSON.GetProperty("color"))),
+    new Vector4(ConvertJsonArrayToFloatArray(backgroundJSON.GetProperty("ambient")))
     );
 
-    Light light = new Light(
-        new Vector4(ConvertJsonArrayToFloatArray(lightJSON.GetProperty("direction"))),
-        ConvertJsonArrayToFloatArray(lightJSON.GetProperty("color"))
-    );
-    Vector4 lightDirection = new Vector4(ConvertJsonArrayToFloatArray(lightJSON.GetProperty("direction")));
-    float[] lightColor = ConvertJsonArrayToFloatArray(lightJSON.GetProperty("color"));
+    Light[] lights = lightsJSON.EnumerateArray()
+    .Select(lightElement =>
+    {
+      JsonElement directionalLightJSON = lightElement.GetProperty("directionalLight");
+      Vector4 direction = new Vector4(ConvertJsonArrayToFloatArray(directionalLightJSON.GetProperty("direction")));
+      Vector4 color = new Vector4(ConvertJsonArrayToFloatArray(directionalLightJSON.GetProperty("color")));
+      return new DirectionalLight(color, direction);
+    })
+    .ToArray();
+
+    Material[] materials = materialsJSON.EnumerateArray()
+    .Select(materialElement =>
+    {
+      JsonElement phongMaterialJSON = materialElement.GetProperty("phongMaterial");
+      Vector4 diffuseColor = new Vector4(ConvertJsonArrayToFloatArray(phongMaterialJSON.GetProperty("diffuseColor")));
+
+      // Check if specularColor and exponent properties exist
+      if (phongMaterialJSON.TryGetProperty("specularColor", out JsonElement specularColorElement) &&
+          phongMaterialJSON.TryGetProperty("exponent", out JsonElement exponentElement))
+      {
+        Vector4 specularColor = new Vector4(ConvertJsonArrayToFloatArray(specularColorElement));
+        float exponent = exponentElement.GetSingle();
+
+        if (phongMaterialJSON.TryGetProperty("reflectiveColor", out JsonElement reflectiveColorElement) &&
+            phongMaterialJSON.TryGetProperty("transparentColor", out JsonElement transparentColorElement) &&
+            phongMaterialJSON.TryGetProperty("indexOfRefraction", out JsonElement indexOfRefractionElement))
+        {
+          Vector4 reflectiveColor = new Vector4(ConvertJsonArrayToFloatArray(reflectiveColorElement));
+          Vector4 transparentColor = new Vector4(ConvertJsonArrayToFloatArray(transparentColorElement));
+          float indexOfRefraction = indexOfRefractionElement.GetSingle();
+          return new PhongMaterial(diffuseColor, reflectiveColor, transparentColor, indexOfRefraction, specularColor, exponent);
+        }
+
+        return new PhongMaterial(diffuseColor, specularColor, exponent);
+      }
+      else
+      {
+        return new PhongMaterial(diffuseColor);
+      }
+    })
+    .ToArray();
 
     Group group = new Group();
-    foreach (JsonElement element in groupJSON.EnumerateArray())
+    groupJSON.EnumerateArray().ToList().ForEach(element =>
     {
-      // Check if the element has a "transform" property
       if (element.TryGetProperty("transform", out JsonElement transformElement))
       {
-        // If it does, retrieve the transformation JSON object
         JsonElement transformationJson = transformElement.GetProperty("transformations");
-        // Initialize a new transformation matrix
         Matrix4 transformationMatrix = new Matrix4();
 
-        // Iterate through each transformation in the array
         foreach (JsonElement transformationElement in transformationJson.EnumerateArray())
         {
-          // Apply each transformation to the transformation matrix
-          if (transformationElement.TryGetProperty("scale", out var scaleJson))
+          if (transformationElement.TryGetProperty("translate", out var translateJson))
+          {
+            float[] translate = ConvertJsonArrayToFloatArray(translateJson);
+            transformationMatrix = transformationMatrix.Multiply(Matrix4.Translate(translate[0], translate[1], translate[2]));
+          }
+          else if (transformationElement.TryGetProperty("scale", out var scaleJson))
           {
             float[] scale = ConvertJsonArrayToFloatArray(scaleJson);
             transformationMatrix = transformationMatrix.Multiply(Matrix4.Scale(scale[0], scale[1], scale[2]));
@@ -81,54 +118,54 @@ public class SceneParser
           }
         }
 
-        // Retrieve the object JSON within the transformation object
-        JsonElement objectJson = transformElement.GetProperty("object");
-        JsonElement sphereElement = objectJson.GetProperty("sphere");
-        Vector4 center = new Vector4(ConvertJsonArrayToFloatArray(sphereElement.GetProperty("center")));
-        float radius = sphereElement.GetProperty("radius").GetSingle();
-        float[] color = ConvertJsonArrayToFloatArray(sphereElement.GetProperty("color"));
+        if (transformElement.TryGetProperty("object", out JsonElement objectJson))
+        {
+          if (objectJson.TryGetProperty("sphere", out JsonElement sphereElement))
+          {
+            Vector4 center = new Vector4(ConvertJsonArrayToFloatArray(sphereElement.GetProperty("center")));
+            float radius = sphereElement.GetProperty("radius").GetSingle();
+            int materialIndex = sphereElement.GetProperty("material").GetInt32();
 
-        Sphere sphere = new Sphere(center, radius, color);
-        Transformation transformation = new Transformation(transformationMatrix, sphere);
-        group.AddObject(transformation);
-        Console.WriteLine(transformation.ToString());
+            Sphere sphere = new Sphere(center, radius, materials[materialIndex]);
+            Transformation transformation = new Transformation(transformationMatrix, sphere);
+            group.AddObject(transformation);
+            Console.WriteLine(transformation);
+          }
+        }
       }
       else if (element.TryGetProperty("sphere", out JsonElement sphereElement))
       {
         Vector4 center = new Vector4(ConvertJsonArrayToFloatArray(sphereElement.GetProperty("center")));
         float radius = sphereElement.GetProperty("radius").GetSingle();
-        float[] color = ConvertJsonArrayToFloatArray(sphereElement.GetProperty("color"));
+        int materialIndex = sphereElement.GetProperty("material").GetInt32();
 
-        Sphere sphere = new Sphere(center, radius, color);
+        Sphere sphere = new Sphere(center, radius, materials[materialIndex]);
         group.AddObject(sphere);
-        Console.WriteLine(sphere.ToString());
       }
       else if (element.TryGetProperty("plane", out JsonElement planeElement))
       {
         Vector4 normal = new Vector4(ConvertJsonArrayToFloatArray(planeElement.GetProperty("normal")));
         float offset = planeElement.GetProperty("offset").GetSingle();
-        float[] color = ConvertJsonArrayToFloatArray(planeElement.GetProperty("color"));
+        int materialIndex = planeElement.GetProperty("material").GetInt32();
 
-        Plane plane = new Plane(normal, offset, color);
+        Plane plane = new Plane(normal, offset, materials[materialIndex]);
         group.AddObject(plane);
-        Console.WriteLine(plane.ToString());
       }
       else if (element.TryGetProperty("triangle", out JsonElement triangleElement))
       {
         Vector4 v1 = new Vector4(ConvertJsonArrayToFloatArray(triangleElement.GetProperty("v1")));
         Vector4 v2 = new Vector4(ConvertJsonArrayToFloatArray(triangleElement.GetProperty("v2")));
         Vector4 v3 = new Vector4(ConvertJsonArrayToFloatArray(triangleElement.GetProperty("v3")));
-        float[] color = ConvertJsonArrayToFloatArray(triangleElement.GetProperty("color"));
+        int materialIndex = triangleElement.GetProperty("material").GetInt32();
 
-        Triangle triangle = new Triangle(v1, v2, v3, color);
+        Triangle triangle = new Triangle(v1, v2, v3, materials[materialIndex]);
         group.AddObject(triangle);
-        Console.WriteLine(triangle.ToString());
       }
       else
       {
         throw new Exception("Unknown object type or invalid format in group.");
       }
-    }
+    });
 
     jsonDocument.Dispose();
 
@@ -137,7 +174,8 @@ public class SceneParser
       camera = camera,
       background = background,
       group = group,
-      light = light,
+      lights = lights,
+      materials = materials
     };
   }
 

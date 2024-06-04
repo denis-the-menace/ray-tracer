@@ -70,9 +70,34 @@ public class Vector4
     }
   }
 
+  public Vector4 Clamp(Vector4 min, Vector4 max)
+  {
+    return new Vector4(
+        Math.Clamp(X, min.X, max.X),
+        Math.Clamp(Y, min.Y, max.Y),
+        Math.Clamp(Z, min.Z, max.Z),
+        Math.Clamp(W, min.W, max.W)
+    );
+  }
+
+  public Vector4 Clamp(float min, float max)
+  {
+    return new Vector4(
+        Math.Clamp(X, min, max),
+        Math.Clamp(Y, min, max),
+        Math.Clamp(Z, min, max),
+        Math.Clamp(W, min, max)
+    );
+  }
+
   public Vector4 Subtract(Vector4 v)
   {
     return new Vector4(X - v.X, Y - v.Y, Z - v.Z, W - v.W);
+  }
+
+  public Vector4 Subtract(float scalar)
+  {
+    return new Vector4(X - scalar, Y - scalar, Z - scalar, W - scalar);
   }
 
   public Vector4 Add(Vector4 v)
@@ -80,9 +105,19 @@ public class Vector4
     return new Vector4(X + v.X, Y + v.Y, Z + v.Z, W + v.W);
   }
 
+  public Vector4 Add(float scalar)
+  {
+    return new Vector4(X + scalar, Y + scalar, Z + scalar, W + scalar);
+  }
+
   public Vector4 Multiply(float scalar)
   {
     return new Vector4(X * scalar, Y * scalar, Z * scalar, W * scalar);
+  }
+
+  public Vector4 Multiply(Vector4 v)
+  {
+    return new Vector4(X * v.X, Y * v.Y, Z * v.Z, W * v.W);
   }
 
   public Vector4 Divide(float divisor)
