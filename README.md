@@ -6,9 +6,9 @@ Run the command<br>
 <code>dotnet run [JSON input file] [output file] Program.cs</code>
 
 <h2>Results</h2>
-![output1](https://github.com/denis-the-menace/ray-tracer/blob/master/_examples/scene1.png)
-![output2](https://github.com/denis-the-menace/ray-tracer/blob/master/_examples/scene2.png)
-![output3](https://github.com/denis-the-menace/ray-tracer/blob/master/_examples/scene3.png)
+![output1](https://github.com/denis-the-menace/ray-tracer/blob/master/_examples/scene1.png?raw=true)
+![output2](https://github.com/denis-the-menace/ray-tracer/blob/master/_examples/scene2.png?raw=true)
+![output3](https://github.com/denis-the-menace/ray-tracer/blob/master/_examples/scene3.png?raw=true)
 
 <h2>Example input file</h2>
 Feel free to change SceneParser.cs for different inputs.<br>
