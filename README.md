@@ -1,17 +1,17 @@
 <h1>Ray Tracer with .NET Core</h1>
 
 <h2>How to compile and run</h2>
-Install .NET SDK
-Run the command
+Install .NET SDK<br>
+Run the command<br>
 <code>dotnet run <JSON input file> <output file> Program.cs</code>
 
 <h2>Results</h2>
-![output1](./outputs/scene1.png)
-![output2](./outputs/scene2.png)
-![output3](./outputs/scene3.png)
+![output1](./_examples/scene1.png)
+![output2](./_examples/scene2.png)
+![output3](./_examples/scene3.png)
 
 <h2>Example input file</h2>
-Feel free to change SceneParser.cs for different inputs.
+Feel free to change SceneParser.cs for different inputs.<br>
 <code>{
 	"perspectivecamera" : {
 		"center" : [0, 0.5, 5],
@@ -31,20 +31,6 @@ Feel free to change SceneParser.cs for different inputs.
 				"material" : 0
 			}
 		},
-		{ 
-			"sphere" : {
-				"center" : [-0.5, -0.6, 0.2],
-				"radius" : 0.4,
-				"material" : 1
-			}
-		},
-		{
-			"plane" : {
-				"normal" : [0.0, 1, 0.0],
-				"offset" : -1,
-				"material" : 2
-			}
-		}
 	],
 	"lights" : [
 		{
@@ -65,21 +51,6 @@ Feel free to change SceneParser.cs for different inputs.
 				"indexOfRefraction" : 1
 			}
 		},
-		{
-			"phongMaterial" : {
-				"diffuseColor" : [1, 0.1, 0.1],
-				"specularColor" : [1, 1, 1],
-				"exponent" : 50,
-				"transparentColor" : [0, 0, 0],
-				"reflectiveColor" : [0.9, 0.1, 0.1],
-				"indexOfRefraction" : 1
-			}
-		},
-		{
-			"phongMaterial" : {
-				"diffuseColor" : [1, 1, 1]
-			}
-		}
 	]
 }
 </code>
