@@ -3,12 +3,12 @@
 <h2>How to compile and run</h2>
 Install .NET SDK<br>
 Run the command<br>
-<code>dotnet run <JSON input file> <output file> Program.cs</code>
+<code>dotnet run [JSON input file] [output file] Program.cs</code>
 
 <h2>Results</h2>
-![output1](./_examples/scene1.png)
-![output2](./_examples/scene2.png)
-![output3](./_examples/scene3.png)
+![output1](/_examples/scene1.png)<br>
+![output2](/_examples/scene2.png)<br>
+![output3](/_examples/scene3.png)<br>
 
 <h2>Example input file</h2>
 Feel free to change SceneParser.cs for different inputs.<br>
