@@ -1,4 +1,4 @@
-﻿namespace assignment1;
+﻿namespace ray_tracer;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
