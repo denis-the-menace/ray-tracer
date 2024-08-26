@@ -1,17 +1,20 @@
 <h1>Ray Tracer with .NET Core</h1>
 
-<h2>How to compile and run</h2>
-Install .NET SDK
-Run the command
-<code>dotnet run <JSON input file> <output file> Program.cs</code>
+<table>
+  <tr>
+    <td><img src="_examples/scene1.png" alt="scene1" width="250"></td>
+    <td><img src="_examples/scene2.png" alt="scene2" width="250"></td>
+    <td><img src="_examples/scene3.png" alt="scene3" width="250"></td>
+  </tr>
+</table>
 
-<h2>Results</h2>
-![output1](./outputs/scene1.png)
-![output2](./outputs/scene2.png)
-![output3](./outputs/scene3.png)
+<h2>How to compile and run</h2>
+Install .NET SDK<br>
+Run the command:<br>
+<code>dotnet run &lt;JSON input file&gt; &lt;output file&gt; Program.cs</code>
 
 <h2>Example input file</h2>
-Feel free to change SceneParser.cs for different inputs.
+Feel free to change SceneParser.cs for different inputs.<br>
 <code>{
 	"perspectivecamera" : {
 		"center" : [0, 0.5, 5],
